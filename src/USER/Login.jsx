@@ -1,24 +1,37 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
+import api from "../api"; 
 
 function Login() {
-  const [Data, setData] = useState({
+  const [data, setData] = useState({
     email: "",
     password: "",
   });
 
-  const [errors, setErrors] = useState({});
+  const [notification, setNotification] = useState("");
+  const [showNote, setShowNote] = useState(false);
   const navigate = useNavigate();
 
+  const triggerNotification = (msg) => {
+    setNotification(msg);
+    setShowNote(true);
+    setTimeout(() => setShowNote(false), 3000);
+  };
+
   useEffect(() => {
-    const user = localStorage.getItem("user");
-    if (user) {
-      const parsedUser = JSON.parse(user);
-      if (parsedUser.role === "admin") {
-        navigate("/admin/dashboard", { replace: true });
-      } else {
-        navigate("/", { replace: true });
+    const token = localStorage.getItem("token");
+    const rawUser = localStorage.getItem("user");
+
+    if (token && rawUser && rawUser !== "undefined") {
+      try {
+        const user = JSON.parse(rawUser);
+        if (user.role === "admin") {
+          navigate("/admin/dashboard", { replace: true });
+        } else {
+          navigate("/", { replace: true });
+        }
+      } catch (err) {
+        localStorage.clear();
       }
     }
   }, [navigate]);
@@ -30,51 +43,40 @@ function Login() {
     }));
   }
 
-  function validate(data) {
-    const errors = {};
-    if (!data.email.includes("@") || !data.email.includes(".com")) {
-      errors.email = "Enter a valid email address";
-    }
-    if (!data.password || data.password.length < 6) {
-      errors.password = "Password must be at least 6 characters";
-    }
-    return errors;
-  }
-
-  function submit(e) {
+  async function submit(e) {
     e.preventDefault();
-    const validationErrors = validate(Data);
-    setErrors(validationErrors);
 
-    if (Object.keys(validationErrors).length === 0) {
-      axios
-        .get("http://localhost:3001/users")
-        .then((res) => {
-          const user = res.data.find(
-            (u) => u.email === Data.email && u.password === Data.password
-          );
+    try {
+      const res = await api.post("/auth/login", data);
+      
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("user", JSON.stringify(res.data.user));
 
-          if (user && user.status === "active") {
-            localStorage.setItem("user", JSON.stringify(user));
-            if (user.role === "admin") {
-              navigate("/admin/dashboard", { replace: true });
-            } else {
-              navigate("/", { replace: true });
-            }
-          } else {
-            setErrors({ general: "Invalid Email or Password" });
-          }
-        })
-        .catch((err) => {
-          console.error("Login Error", err);
-          setErrors({ general: "Something went wrong. Try again!" });
-        });
+      triggerNotification("Login Successful");
+
+      setTimeout(() => {
+        if (res.data.user.role === "admin") {
+          navigate("/admin/dashboard", { replace: true });
+        } else {
+          navigate("/", { replace: true });
+        }
+      }, 1500);
+
+    } catch (err) {
+      console.error("Login Error", err);
+      triggerNotification(err.response?.data?.message || "Invalid email or password");
     }
   }
 
   return (
     <div className="relative flex justify-center items-center min-h-screen overflow-hidden">
-     
+      
+      <div className={`fixed top-10 z-[100] transition-all duration-500 transform ${showNote ? "translate-y-0 opacity-100" : "-translate-y-20 opacity-0 pointer-events-none"}`}>
+        <div className="bg-slate-900 text-white px-8 py-4 rounded-2xl shadow-2xl flex items-center gap-3 border border-white/10 backdrop-blur-md">
+          <span className="text-sm font-bold tracking-wide">{notification}</span>
+        </div>
+      </div>
+
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{
@@ -83,20 +85,12 @@ function Login() {
         }}
       ></div>
 
-      
       <div className="absolute inset-0 bg-black/50"></div>
 
-    
       <div className="relative z-10 w-96 p-8 rounded-2xl shadow-2xl bg-white/20 backdrop-blur-lg border border-white/30">
         <h2 className="text-3xl font-bold text-center text-white mb-6">
           Login
         </h2>
-
-        {errors.general && (
-          <div className="bg-red-600 text-white p-2 rounded text-center mb-3">
-            {errors.general}
-          </div>
-        )}
 
         <form onSubmit={submit} className="flex flex-col gap-4">
           <div>
@@ -104,13 +98,11 @@ function Login() {
             <input
               type="email"
               name="email"
-              value={Data.email}
+              value={data.email}
               onChange={handleChange}
-              className="w-full p-2 rounded-md border focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full p-2 rounded-md border focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white/90"
+              required
             />
-            {errors.email && (
-              <p className="text-red-300 text-sm mt-1">{errors.email}</p>
-            )}
           </div>
 
           <div>
@@ -118,18 +110,16 @@ function Login() {
             <input
               type="password"
               name="password"
-              value={Data.password}
+              value={data.password}
               onChange={handleChange}
-              className="w-full p-2 rounded-md border focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full p-2 rounded-md border focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white/90"
+              required
             />
-            {errors.password && (
-              <p className="text-red-300 text-sm mt-1">{errors.password}</p>
-            )}
           </div>
 
           <button
             type="submit"
-            className="mt-3 py-2 px-4 bg-blue-600 text-white font-bold rounded-md hover:bg-blue-700 transition-all"
+            className="mt-3 py-2 px-4 bg-blue-600 text-white font-bold rounded-md hover:bg-blue-700 transition-all shadow-lg"
           >
             Login
           </button>
@@ -137,7 +127,7 @@ function Login() {
 
         <p className="text-gray-200 text-center mt-4">
           Don’t have an account?{" "}
-          <Link to="/register" className="text-yellow-300 underline">
+          <Link to="/register" className="text-yellow-300 underline font-bold hover:text-yellow-400 transition-colors">
             Register
           </Link>
         </p>

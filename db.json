@@ -4,7 +4,7 @@
       "id": "2",
       "name": "Gray Hummer Truck Miniature",
       "price": 2999,
-      "stock": "10",
+      "stock": 8,
       "category": "Truck-kun",
       "description": "High-quality Ferrari LaFerrari miniature model with metal body and rubber tires for collectors and kids.",
       "image": "https://images.pexels.com/photos/1648349/pexels-photo-1648349.jpeg",
@@ -14,7 +14,7 @@
       "id": "3",
       "name": " Off-Road jeep ",
       "price": 1599,
-      "stock": 24,
+      "stock": 22,
       "category": "Jeep",
       "description": "Die-cast Jeep Wrangler toy car with off-road tires, rugged detailing, and durable build for adventurous kids.",
       "image": "https://images.pexels.com/photos/6363047/pexels-photo-6363047.jpeg",
@@ -24,7 +24,7 @@
       "id": "4",
       "name": "Red Miniature Car",
       "price": 1899,
-      "stock": 13,
+      "stock": 11,
       "category": "Jeep",
       "description": "Miniature Porsche 911 Carrera S with smooth finish, pull-back action, and collector’s edition detailing.",
       "image": "https://images.pexels.com/photos/7186094/pexels-photo-7186094.jpeg",
@@ -34,7 +34,7 @@
       "id": "5",
       "name": "Toy Truck on Moss",
       "price": 2799,
-      "stock": 3,
+      "stock": 2,
       "category": "Jeep",
       "description": "Stylish die-cast Mercedes-Benz G-Class toy car with luxury design, pull-back mechanism, and realistic interior.",
       "image": "https://images.pexels.com/photos/19687596/pexels-photo-19687596.jpeg",
@@ -44,7 +44,7 @@
       "id": "6",
       "name": "Red and Gray Car Toy",
       "price": 1999,
-      "stock": 18,
+      "stock": 16,
       "category": "Car",
       "description": "Futuristic BMW i8 concept toy car with gull-wing doors, electric look design, and smooth rolling wheels.",
       "image": "https://images.pexels.com/photos/552139/pexels-photo-552139.jpeg",
@@ -54,7 +54,7 @@
       "id": "8",
       "name": "Vintage Toy Car ",
       "price": 1799,
-      "stock": 19,
+      "stock": 18,
       "category": "Car",
       "description": "Classic Ford Mustang GT miniature with pull-back action, retro styling, and collector’s edition design.",
       "image": "https://images.pexels.com/photos/33028688/pexels-photo-33028688.jpeg",
@@ -104,7 +104,7 @@
       "id": "14",
       "name": "Bmw Alpina",
       "price": 2899,
-      "stock": 11,
+      "stock": 10,
       "category": "Car",
       "description": "High-quality McLaren P1 miniature toy car with futuristic design and realistic styling.",
       "image": "https://i0.wp.com/lamleygroup.com/wp-content/uploads/2021/12/20211114_130631-01.jpeg?ssl=1&fit=3840%2C1563",
@@ -214,7 +214,7 @@
       "id": "a874",
       "name": "lamborgini",
       "price": "2999",
-      "stock": "10",
+      "stock": 8,
       "category": "Car",
       "image": "https://images.pexels.com/photos/1648349/pexels-photo-1648349.jpeg",
       "description": "cars",
@@ -289,6 +289,14 @@
       "password": "123456",
       "role": "user",
       "status": "active"
+    },
+    {
+      "id": "9c80",
+      "name": "sharath",
+      "email": "sharath@gmail.com",
+      "password": "123456",
+      "role": "user",
+      "status": "active"
     }
   ],
   "carts": [
@@ -351,7 +359,19 @@
     {
       "id": "8b84",
       "userId": "2897",
-      "items": []
+      "items": [
+        {
+          "id": "8146",
+          "name": "shamil",
+          "price": "10000",
+          "stock": "60",
+          "category": "car",
+          "image": "https://th.bing.com/th/id/OIP.ku1fkQWfAlZy7i8MbggTcgHaE6?w=297&h=197&c=7&r=0&o=7&cb=defcachec2&dpr=1.5&pid=1.7&rm=3",
+          "description": "",
+          "status": "active",
+          "qty": 2
+        }
+      ]
     },
     {
       "id": "6d6d",
@@ -371,6 +391,11 @@
     {
       "id": "928e",
       "userId": "aedc",
+      "items": []
+    },
+    {
+      "id": "1699",
+      "userId": "9c80",
       "items": []
     }
   ],
@@ -1361,6 +1386,143 @@
         "address": "nm"
       },
       "date": "2025-11-10T08:34:55.907Z"
+    },
+    {
+      "id": "13ab",
+      "userId": "9c80",
+      "items": [
+        {
+          "id": "4",
+          "name": "Red Miniature Car",
+          "price": 1899,
+          "stock": 13,
+          "category": "Jeep",
+          "description": "Miniature Porsche 911 Carrera S with smooth finish, pull-back action, and collector’s edition detailing.",
+          "image": "https://images.pexels.com/photos/7186094/pexels-photo-7186094.jpeg",
+          "status": "active",
+          "qty": 1
+        },
+        {
+          "id": "14",
+          "name": "Bmw Alpina",
+          "price": 2899,
+          "stock": 11,
+          "category": "Car",
+          "description": "High-quality McLaren P1 miniature toy car with futuristic design and realistic styling.",
+          "image": "https://i0.wp.com/lamleygroup.com/wp-content/uploads/2021/12/20211114_130631-01.jpeg?ssl=1&fit=3840%2C1563",
+          "status": "active",
+          "qty": 1
+        },
+        {
+          "id": "2",
+          "name": "Gray Hummer Truck Miniature",
+          "price": 2999,
+          "stock": "10",
+          "category": "Truck-kun",
+          "description": "High-quality Ferrari LaFerrari miniature model with metal body and rubber tires for collectors and kids.",
+          "image": "https://images.pexels.com/photos/1648349/pexels-photo-1648349.jpeg",
+          "status": "active",
+          "qty": 1
+        }
+      ],
+      "total": 7797,
+      "customer": {
+        "name": "arshu",
+        "phone": "99988353485348",
+        "address": "cjh"
+      },
+      "date": "2026-01-10T10:29:42.623Z"
+    },
+    {
+      "id": "4bf9",
+      "userId": "9c80",
+      "items": [
+        {
+          "id": "8",
+          "name": "Vintage Toy Car ",
+          "price": 1799,
+          "stock": 19,
+          "category": "Car",
+          "description": "Classic Ford Mustang GT miniature with pull-back action, retro styling, and collector’s edition design.",
+          "image": "https://images.pexels.com/photos/33028688/pexels-photo-33028688.jpeg",
+          "status": "active",
+          "qty": 1
+        },
+        {
+          "id": "a874",
+          "name": "lamborgini",
+          "price": "2999",
+          "stock": "10",
+          "category": "Car",
+          "image": "https://images.pexels.com/photos/1648349/pexels-photo-1648349.jpeg",
+          "description": "cars",
+          "status": "active",
+          "qty": 2
+        },
+        {
+          "id": "3",
+          "name": " Off-Road jeep ",
+          "price": 1599,
+          "stock": 24,
+          "category": "Jeep",
+          "description": "Die-cast Jeep Wrangler toy car with off-road tires, rugged detailing, and durable build for adventurous kids.",
+          "image": "https://images.pexels.com/photos/6363047/pexels-photo-6363047.jpeg",
+          "status": "active",
+          "qty": 2
+        },
+        {
+          "id": "5",
+          "name": "Toy Truck on Moss",
+          "price": 2799,
+          "stock": 3,
+          "category": "Jeep",
+          "description": "Stylish die-cast Mercedes-Benz G-Class toy car with luxury design, pull-back mechanism, and realistic interior.",
+          "image": "https://images.pexels.com/photos/19687596/pexels-photo-19687596.jpeg",
+          "status": "active",
+          "qty": 1
+        },
+        {
+          "id": "2",
+          "name": "Gray Hummer Truck Miniature",
+          "price": 2999,
+          "stock": "11",
+          "category": "Truck-kun",
+          "description": "High-quality Ferrari LaFerrari miniature model with metal body and rubber tires for collectors and kids.",
+          "image": "https://images.pexels.com/photos/1648349/pexels-photo-1648349.jpeg",
+          "status": "active",
+          "qty": 3
+        },
+        {
+          "id": "4",
+          "name": "Red Miniature Car",
+          "price": 1899,
+          "stock": 12,
+          "category": "Jeep",
+          "description": "Miniature Porsche 911 Carrera S with smooth finish, pull-back action, and collector’s edition detailing.",
+          "image": "https://images.pexels.com/photos/7186094/pexels-photo-7186094.jpeg",
+          "status": "active",
+          "qty": 1
+        },
+        {
+          "id": "6",
+          "name": "Red and Gray Car Toy",
+          "price": 1999,
+          "stock": 18,
+          "category": "Car",
+          "description": "Futuristic BMW i8 concept toy car with gull-wing doors, electric look design, and smooth rolling wheels.",
+          "image": "https://images.pexels.com/photos/552139/pexels-photo-552139.jpeg",
+          "status": "active",
+          "qty": 2
+        }
+      ],
+      "total": 28688,
+      "customer": {
+        "name": "arshu",
+        "phone": "282929922",
+        "address": "iejks,wkdwkdw"
+      },
+      "status": "Processing",
+      "date": "2026-01-13T10:29:47.302Z"
     }
   ]
 }

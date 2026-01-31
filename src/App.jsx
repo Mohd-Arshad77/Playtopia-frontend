@@ -1,8 +1,9 @@
 import React from "react";
+import { Route, Routes, Navigate, useLocation } from "react-router-dom";
+
 import Navbar from "./USER/Navbar";
 import Footer from "./USER/Footer";
 import Home from "./USER/Home";
-import { Route, Routes, Navigate, useLocation } from "react-router-dom";
 import Shop from "./USER/Shop";
 import Contact from "./USER/Contact";
 import ProductDetails from "./USER/ProductDetails";
@@ -10,6 +11,9 @@ import Register from "./USER/Register";
 import Login from "./USER/Login";
 import Cart from "./USER/Cart";
 import Checkout from "./USER/Checkout";
+import Wishlist from "./USER/Wishlist";
+import Success from "./USER/Success";
+
 
 import Sidenavbar from "./ADMIN/Sidenavbar";
 import Dashboard from "./ADMIN/Dashboard";
@@ -19,68 +23,69 @@ import Orders from "./ADMIN/Orders";
 
 const App = () => {
   const location = useLocation();
+  
   const hideLayout = ["/login", "/register"].includes(location.pathname);
+  const isAdminRoute = location.pathname.startsWith("/admin");
 
   const raw = localStorage.getItem("user");
-  const user = raw ? JSON.parse(raw) : null;
-
+  let user = null;
+  
+  try {
+    if (raw && raw !== "undefined") {
+      user = JSON.parse(raw);
+    }
+  } catch (err) {
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+  }
 
   const isAdmin = user?.role === "admin";
   const isUser = user?.role === "user";
 
   return (
     <div>
-      {!hideLayout && !location.pathname.startsWith("/admin") && <Navbar />}
+      {!hideLayout && !isAdminRoute && <Navbar />}
 
       <Routes>
-       
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
 
-   
         <Route
           path="/"
-          element={
-            isUser ? <Home /> : isAdmin ? <Navigate to="/admin/dashboard" /> : <Navigate to="/login" />
-          }
+          element={isUser ? <Home /> : isAdmin ? <Navigate to="/admin/dashboard" /> : <Navigate to="/login" />}
         />
         <Route
           path="/shop"
-          element={
-            isUser ? <Shop /> : isAdmin ? <Navigate to="/admin/dashboard" /> : <Navigate to="/login" />
-          }
+          element={isUser ? <Shop /> : isAdmin ? <Navigate to="/admin/dashboard" /> : <Navigate to="/login" />}
         />
         <Route
           path="/contact"
-          element={
-            isUser ? <Contact /> : isAdmin ? <Navigate to="/admin/dashboard" /> : <Navigate to="/login" />
-          }
+          element={isUser ? <Contact /> : isAdmin ? <Navigate to="/admin/dashboard" /> : <Navigate to="/login" />}
         />
         <Route
           path="/product/:id"
-          element={
-            isUser ? <ProductDetails /> : isAdmin ? <Navigate to="/admin/dashboard" /> : <Navigate to="/login" />
-          }
+          element={isUser ? <ProductDetails /> : isAdmin ? <Navigate to="/admin/dashboard" /> : <Navigate to="/login" />}
         />
         <Route
           path="/cart"
-          element={
-            isUser ? <Cart /> : isAdmin ? <Navigate to="/admin/dashboard" /> : <Navigate to="/login" />
-          }
+          element={isUser ? <Cart /> : isAdmin ? <Navigate to="/admin/dashboard" /> : <Navigate to="/login" />}
         />
         <Route
           path="/checkout"
-          element={
-            isUser ? <Checkout /> : isAdmin ? <Navigate to="/admin/dashboard" /> : <Navigate to="/login" />
-          }
+          element={isUser ? <Checkout /> : isAdmin ? <Navigate to="/admin/dashboard" /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/wishlist"
+          element={isUser ? <Wishlist /> : isAdmin ? <Navigate to="/admin/dashboard" /> : <Navigate to="/login" />}
+        />
+        <Route 
+          path="/success"
+          element={isUser ? <Success/> :isAdmin ? <Navigate to="/admin/dashboard"/> : <Navigate to="/login"/>}
         />
 
-       
         <Route
           path="/admin/*"
-          element={
-            isAdmin ? <Sidenavbar /> : isUser ? <Navigate to="/" /> : <Navigate to="/login" />
-          }
+          element={isAdmin ? <Sidenavbar /> : <Navigate to="/login" />}
         >
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="users" element={<Users />} />
@@ -89,11 +94,17 @@ const App = () => {
           <Route index element={<Navigate to="dashboard" replace />} />
         </Route>
 
-      
-        <Route path="*" element={<Navigate to="/login" replace />} />
+        <Route 
+          path="*" 
+          element={
+            isAdmin ? <Navigate to="/admin/dashboard" /> : 
+            isUser ? <Navigate to="/" /> : 
+            <Navigate to="/login" />
+          } 
+        />
       </Routes>
 
-      {!hideLayout && !location.pathname.startsWith("/admin") && <Footer />}
+      {!hideLayout && !isAdminRoute && <Footer />}
     </div>
   );
 };
