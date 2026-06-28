@@ -34,11 +34,13 @@ function Wishlist() {
   const removeFromWishlist = async (id) => {
     try {
       await api.post("/wishlist/toggle", { productId: id });
-      
-      setWishlist(wishlist.filter((item) => item._id !== id));
+      const newWishlist = wishlist.filter((item) => item._id !== id);
+      setWishlist(newWishlist);
       triggerNotification("Item removed");
-      window.dispatchEvent(new Event("wishlistUpdate"));
-
+      // Send count so Navbar badge updates instantly
+      window.dispatchEvent(
+        new CustomEvent("wishlistUpdate", { detail: { count: newWishlist.length } })
+      );
     } catch (err) {
       console.error(err);
       triggerNotification("Failed to remove");
@@ -47,16 +49,10 @@ function Wishlist() {
 
   const addToCartFromWishlist = async (product) => {
     try {
-      await api.post("/cart/add", {
-        productId: product._id,
-        qty: 1
-      });
-
+      await api.post("/cart/add", { productId: product._id, qty: 1 });
       triggerNotification("Moved to Cart!");
-      window.dispatchEvent(new Event("cartUpdate"));
-      
+      window.dispatchEvent(new CustomEvent("cartUpdate", { detail: { count: 1 } }));
     } catch (err) {
-      console.error("Cart Error:", err);
       triggerNotification(err.response?.data?.message || "Failed to add to cart");
     }
   };

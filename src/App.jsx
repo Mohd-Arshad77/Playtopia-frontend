@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Route, Routes, Navigate, useLocation } from "react-router-dom";
 
 import Navbar from "./USER/Navbar";
@@ -14,33 +14,48 @@ import Checkout from "./USER/Checkout";
 import Wishlist from "./USER/Wishlist";
 import Success from "./USER/Success";
 
-
 import Sidenavbar from "./ADMIN/Sidenavbar";
 import Dashboard from "./ADMIN/Dashboard";
 import Users from "./ADMIN/Users";
 import Products from "./ADMIN/Products";
 import Orders from "./ADMIN/Orders";
 
-const App = () => {
-  const location = useLocation();
-  
-  const hideLayout = ["/login", "/register"].includes(location.pathname);
-  const isAdminRoute = location.pathname.startsWith("/admin");
-
-  const raw = localStorage.getItem("user");
-  let user = null;
-  
+// Read auth from localStorage once — stable reference
+const readAuth = () => {
   try {
-    if (raw && raw !== "undefined") {
-      user = JSON.parse(raw);
-    }
-  } catch (err) {
+    const raw = localStorage.getItem("user");
+    if (raw && raw !== "undefined") return JSON.parse(raw);
+  } catch {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
   }
+  return null;
+};
+
+const App = () => {
+  const location = useLocation();
+
+  // ── Auth state in useState — not re-read on every render ─────────────────
+  const [user, setUser] = useState(() => readAuth());
+
+  // Listen for login/logout events dispatched by Login.jsx / Navbar.jsx
+  useEffect(() => {
+    const handleStorageChange = () => setUser(readAuth());
+    // Custom event fired when user logs in/out
+    window.addEventListener("authChange", handleStorageChange);
+    // Also sync across tabs
+    window.addEventListener("storage", handleStorageChange);
+    return () => {
+      window.removeEventListener("authChange", handleStorageChange);
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
+
+  const hideLayout  = ["/login", "/register"].includes(location.pathname);
+  const isAdminRoute = location.pathname.startsWith("/admin");
 
   const isAdmin = user?.role === "admin";
-  const isUser = user?.role === "user";
+  const isUser  = user?.role === "user";
 
   return (
     <div>
@@ -48,60 +63,30 @@ const App = () => {
 
       <Routes>
         <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/login"    element={<Login />} />
 
-        <Route
-          path="/"
-          element={isUser ? <Home /> : isAdmin ? <Navigate to="/admin/dashboard" /> : <Navigate to="/login" />}
-        />
-        <Route
-          path="/shop"
-          element={isUser ? <Shop /> : isAdmin ? <Navigate to="/admin/dashboard" /> : <Navigate to="/login" />}
-        />
-        <Route
-          path="/contact"
-          element={isUser ? <Contact /> : isAdmin ? <Navigate to="/admin/dashboard" /> : <Navigate to="/login" />}
-        />
-        <Route
-          path="/product/:id"
-          element={isUser ? <ProductDetails /> : isAdmin ? <Navigate to="/admin/dashboard" /> : <Navigate to="/login" />}
-        />
-        <Route
-          path="/cart"
-          element={isUser ? <Cart /> : isAdmin ? <Navigate to="/admin/dashboard" /> : <Navigate to="/login" />}
-        />
-        <Route
-          path="/checkout"
-          element={isUser ? <Checkout /> : isAdmin ? <Navigate to="/admin/dashboard" /> : <Navigate to="/login" />}
-        />
-        <Route
-          path="/wishlist"
-          element={isUser ? <Wishlist /> : isAdmin ? <Navigate to="/admin/dashboard" /> : <Navigate to="/login" />}
-        />
-        <Route 
-          path="/success"
-          element={isUser ? <Success/> :isAdmin ? <Navigate to="/admin/dashboard"/> : <Navigate to="/login"/>}
-        />
+        <Route path="/"         element={isUser ? <Home />           : isAdmin ? <Navigate to="/admin/dashboard" /> : <Navigate to="/login" />} />
+        <Route path="/shop"     element={isUser ? <Shop />           : isAdmin ? <Navigate to="/admin/dashboard" /> : <Navigate to="/login" />} />
+        <Route path="/contact"  element={isUser ? <Contact />        : isAdmin ? <Navigate to="/admin/dashboard" /> : <Navigate to="/login" />} />
+        <Route path="/product/:id" element={isUser ? <ProductDetails /> : isAdmin ? <Navigate to="/admin/dashboard" /> : <Navigate to="/login" />} />
+        <Route path="/cart"     element={isUser ? <Cart />           : isAdmin ? <Navigate to="/admin/dashboard" /> : <Navigate to="/login" />} />
+        <Route path="/checkout" element={isUser ? <Checkout />       : isAdmin ? <Navigate to="/admin/dashboard" /> : <Navigate to="/login" />} />
+        <Route path="/wishlist" element={isUser ? <Wishlist />       : isAdmin ? <Navigate to="/admin/dashboard" /> : <Navigate to="/login" />} />
+        <Route path="/success"  element={isUser ? <Success />        : isAdmin ? <Navigate to="/admin/dashboard" /> : <Navigate to="/login" />} />
 
-        <Route
-          path="/admin/*"
-          element={isAdmin ? <Sidenavbar /> : <Navigate to="/login" />}
-        >
+        <Route path="/admin/*" element={isAdmin ? <Sidenavbar /> : <Navigate to="/login" />}>
           <Route path="dashboard" element={<Dashboard />} />
-          <Route path="users" element={<Users />} />
-          <Route path="products" element={<Products />} />
-          <Route path="orders" element={<Orders />} />
+          <Route path="users"     element={<Users />} />
+          <Route path="products"  element={<Products />} />
+          <Route path="orders"    element={<Orders />} />
           <Route index element={<Navigate to="dashboard" replace />} />
         </Route>
 
-        <Route 
-          path="*" 
-          element={
-            isAdmin ? <Navigate to="/admin/dashboard" /> : 
-            isUser ? <Navigate to="/" /> : 
-            <Navigate to="/login" />
-          } 
-        />
+        <Route path="*" element={
+          isAdmin ? <Navigate to="/admin/dashboard" /> :
+          isUser  ? <Navigate to="/" /> :
+                    <Navigate to="/login" />
+        } />
       </Routes>
 
       {!hideLayout && !isAdminRoute && <Footer />}
